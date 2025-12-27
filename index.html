@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Tycoon: Empire of Wealth</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f0f4f8; text-align: center; padding: 20px; }
+  h1 { color: #4f46e5; }
+  .game-container { max-width: 900px; margin: auto; background: #fff; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+  .businesses { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 20px 0; }
+  .business { background: #fff; border: 2px solid #4f46e5; border-radius: 12px; padding: 10px; width: 150px; cursor: pointer; transition: transform 0.2s; }
+  .business:hover { transform: scale(1.05); }
+  .business img { width: 80px; height: 80px; object-fit: cover; margin-bottom: 10px; }
+  .money, .reputation, .influence { font-size: 18px; font-weight: bold; margin-top: 10px; }
+  .log { text-align: left; background: #e5e7eb; padding: 15px; border-radius: 10px; height: 250px; overflow-y: auto; margin-top: 20px; }
+  .milestone { color: green; font-weight: bold; font-size: 18px; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<h1>💼 Ultimate Tycoon: Empire of Wealth 💼</h1>
+<div class="game-container">
+  <p>Start with ₹2 Crore. Expand your empire strategically! 📈</p>
+
+  <div class="businesses">
+    <div class="business" onclick="invest('Tech & AI')">
+      <img src="https://img.icons8.com/color/96/000000/rocket.png" alt="Tech">
+      <div>Tech & AI</div>
+    </div>
+    <div class="business" onclick="invest('Real Estate')">
+      <img src="https://img.icons8.com/color/96/000000/city.png" alt="Real Estate">
+      <div>Real Estate</div>
+    </div>
+    <div class="business" onclick="invest('Energy & Oil')">
+      <img src="https://img.icons8.com/color/96/000000/fuel.png" alt="Energy">
+      <div>Energy & Oil</div>
+    </div>
+    <div class="business" onclick="invest('Luxury Brands')">
+      <img src="https://img.icons8.com/color/96/000000/diamond.png" alt="Luxury">
+      <div>Luxury Brands</div>
+    </div>
+    <div class="business" onclick="invest('Entertainment & Media')">
+      <img src="https://img.icons8.com/color/96/000000/movie.png" alt="Entertainment">
+      <div>Entertainment & Media</div>
+    </div>
+  </div>
+
+  <div class="money" id="money">💰 Total Money: ₹2 Crore</div>
+  <div class="influence" id="influence">🌟 Influence Points: 0</div>
+  <div class="reputation" id="reputation">🏆 Reputation: Neutral</div>
+  <div class="milestone" id="milestone"></div>
+  <div class="log" id="log"></div>
+</div>
+
+<!-- Sound Effects -->
+<audio id="profitSound" src="https://www.soundjay.com/misc/sounds/cash-register-01.mp3"></audio>
+<audio id="lossSound" src="https://www.soundjay.com/button/sounds/button-10.mp3"></audio>
+<audio id="milestoneSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-01.mp3"></audio>
+
+<script>
+let money = 2; // crore
+let influence = 0;
+let reputation = "Neutral";
+const milestones = [200, 500, 1000, 2000];
+let reached = [];
+
+const log = document.getElementById('log');
+const moneyDisplay = document.getElementById('money');
+const influenceDisplay = document.getElementById('influence');
+const reputationDisplay = document.getElementById('reputation');
+const milestoneDisplay = document.getElementById('milestone');
+
+const profitSound = document.getElementById('profitSound');
+const lossSound = document.getElementById('lossSound');
+const milestoneSound = document.getElementById('milestoneSound');
+
+const events = [
+  {text: "Boom! Profit skyrocketed!", multiplier: 1.5, influence: 5, reputation: "Good", sound: profitSound},
+  {text: "Steady growth, minor profit.", multiplier: 1.1, influence: 2, reputation: "Good", sound: profitSound},
+  {text: "Market crash! Big loss!", multiplier: 0.7, influence: -3, reputation: "Bad", sound: lossSound},
+  {text: "Unexpected partnership! Huge gain!", multiplier: 2, influence: 7, reputation: "Good", sound: profitSound},
+  {text: "Government regulation slows growth.", multiplier: 0.85, influence: -2, reputation: "Neutral", sound: lossSound},
+  {text: "Viral success! Massive revenue!", multiplier: 2.5, influence: 10, reputation: "Excellent", sound: profitSound}
+];
+
+function invest(sector) {
+  const event = events[Math.floor(Math.random() * events.length)];
+  const oldMoney = money;
+  money = +(money * event.multiplier).toFixed(2);
+  influence += event.influence;
+  reputation = event.reputation;
+
+  // Play sound
+  event.sound.play();
+
+  // Update displays
+  moneyDisplay.innerText = `💰 Total Money: ₹${money} Crore`;
+  influenceDisplay.innerText = `🌟 Influence Points: ${influence}`;
+  reputationDisplay.innerText = `🏆 Reputation: ${reputation}`;
+
+  // Log
+  const message = `You invested in ${sector}. ${event.text} 💹 ₹${oldMoney} Cr → ₹${money} Cr, Influence: +${event.influence}, Reputation: ${event.reputation}`;
+  log.innerHTML = `<p>${message}</p>` + log.innerHTML;
+
+  // Check milestones
+  milestones.forEach(m => {
+    if(money >= m && !reached.includes(m)) {
+      reached.push(m);
+      milestoneDisplay.innerText = `🎉 Congratulations! You reached ₹${m} Crore!`;
+      milestoneSound.play();
+    }
+  });
+
+  // Win condition
+  if(money >= 2000) {
+    milestoneDisplay.innerText = "🏆 Amazing! You reached ₹2000 Crore! You are the ultimate tycoon!";
+    milestoneSound.play();
+  }
+}
+</script>
+
+</body>
+</html>
